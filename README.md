@@ -1,8 +1,12 @@
 # RESTful-API-application 
 # Python 3 - Flask
 RESTful API application that exposes an endpoint to manage a catalog product.
-
 The product fields are Id, Name, Price, Category, CreatedDate, UpdatedDate.
+
+
+set FLASK_APP=api
+flask run
+
 
 1. flask_sqlalchemy
 

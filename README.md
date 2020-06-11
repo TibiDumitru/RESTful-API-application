@@ -3,13 +3,9 @@
 RESTful API application that exposes an endpoint to manage a catalog product.
 The product fields are Id, Name, Price, Category, CreatedDate, UpdatedDate.
 
-
-set FLASK_APP=api
-flask run
-
-
-1. CRUD
-  + flask_sqlalchemy
+  + flask
+  + flask_sqlalchemy - for persistent data management
+  + jwt 
 
   Python Console
   
@@ -19,6 +15,12 @@ flask run
   
   => creates the tables - mydb.db file (the database which contains the needed tables)
 
+
+  Terminal (CMD)
+  
+  set FLASK_APP=api
+  
+  flask run
 
 
 

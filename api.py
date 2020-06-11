@@ -42,7 +42,7 @@ def token_required(f):
 
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'])
-            current_user = User.query.filter_by(public_id=data['public_id']).first()
+            current_user = User.query.filter_by(id=data['id']).first()
         except:
             return jsonify({'message': 'Token is invalid!'}), 401
 
@@ -75,12 +75,15 @@ def get_one_product(product_id):
     pr_data = {'id': product.id, 'name': product.name, 'price': product.price, 'category': product.category,
                'createdDate': product.createdDate, 'updatedDate': product.updatedDate}
 
-    return jsonify(pr_data)
+    return jsonify({'product': pr_data})
 
 
 @app.route('/catalog/<product_id>', methods=['DELETE'])
 @token_required
-def delete_product(product_id):
+def delete_product(current_user, product_id):
+    if not current_user.admin:
+        return jsonify({'message': 'Cannot perform that function!'})
+
     product = Product.query.filter_by(id=product_id).first()
     if not product:
         return jsonify({'message': 'No product found!'})
@@ -94,9 +97,12 @@ def delete_product(product_id):
 @app.route('/catalog', methods=['POST'])
 @token_required
 def add_product(current_user):
-    data = request.get_json()
+    if not current_user.admin:
+        return jsonify({'message': 'Cannot perform that function!'})
 
-    new_product = Product(name=data['name'], price=data['price'], category=data['category'], updatedDate=datetime.datetime.utcnow)
+    data = request.get_json()
+    new_product = Product(name=data['name'], price=data['price'], category=data['category'],
+                          updatedDate=datetime.datetime.utcnow)
     db.session.add(new_product)
     db.session.commit()
 
@@ -111,7 +117,6 @@ def get_users(current_user):
 
     users = User.query.all()
     users_data = []
-
     for user in users:
         user_data = {'id': user.id, 'name': user.name, 'password': user.password, 'admin': user.admin}
         users_data.append(user_data)

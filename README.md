@@ -5,7 +5,7 @@ The product fields are Id, Name, Price, Category, CreatedDate, UpdatedDate.
 
   + flask
   + flask_sqlalchemy - for persistent data management
-  + jwt - for authorization (tokens)
+  + jwt - for authorization (encode id -> token)
 
   Python Console
   

@@ -8,7 +8,8 @@ set FLASK_APP=api
 flask run
 
 
-1. flask_sqlalchemy
+1. CRUD
+  + flask_sqlalchemy
 
   Python Console
   

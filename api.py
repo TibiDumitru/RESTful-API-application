@@ -24,7 +24,7 @@ class Product(db.Model):
     name = db.Column(db.String(50))
     price = db.Column(db.Float)
     category = db.Column(db.String(50))
-    createdDate = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    createdDate = db.Column(db.DateTime, default=datetime.datetime.now())
     updatedDate = db.Column(db.DateTime)
 
 
@@ -108,7 +108,7 @@ def add_product(current_user):
 
     data = request.get_json()
     new_product = Product(name=data['name'], price=data['price'], category=data['category'],
-                          updatedDate=datetime.datetime.utcnow)
+                          updatedDate=datetime.datetime.now())
     db.session.add(new_product)
     db.session.commit()
 
@@ -132,7 +132,7 @@ def update_product(current_user, product_id, new_value):
     if isinstance(new_value, str):
         product.category = new_value
     # change the updatedDate
-    product.updatedDate = datetime.datetime.utcnow
+    product.updatedDate = datetime.datetime.now()
     db.session.commit()
 
     return jsonify({'message': 'Product has been updated!'})
@@ -177,11 +177,16 @@ def add_user(current_user):
     data = request.get_json()
     hashed_pw = generate_password_hash(data['password'], method='sha256')
     username = data['name']
-    new_user = User(name=username, password=hashed_pw, admin=False)
-    db.session.add(new_user)
-    db.session.commit()
 
-    return jsonify({'message': username + ' joined!'})
+    # if there is no other user with this name
+    if not User.query.filter_by(name=username).first():
+        new_user = User(name=username, password=hashed_pw, admin=False)
+        db.session.add(new_user)
+        db.session.commit()
+
+        return jsonify({'message': username + ' joined!'})
+
+    return jsonify({'message': 'Username already in use!'})
 
 
 @app.route('/user/<user_id>', methods=['PUT'])

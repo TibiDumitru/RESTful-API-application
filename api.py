@@ -115,6 +115,29 @@ def add_product(current_user):
     return jsonify({'message': 'Product added!'})
 
 
+@app.route('/catalog/<product_id>/<new_value>', methods=['PUT'])
+@token_required
+def update_product(current_user, product_id, new_value):
+    if not current_user.admin:
+        return jsonify({'message': 'Cannot perform that function!'})
+
+    product = Product.query.filter_by(id=product_id).first()
+    if not product:
+        return jsonify({'message': 'Product not found!'})
+
+    # if new_value is a float value -> update price
+    if isinstance(new_value, float):
+        product.price = new_value
+    # if new_value is a string value -> update category
+    if isinstance(new_value, str):
+        product.category = new_value
+    # change the updatedDate
+    product.updatedDate = datetime.datetime.utcnow
+    db.session.commit()
+
+    return jsonify({'message': 'Product has been updated!'})
+
+
 @app.route('/user', methods=['GET'])
 @token_required
 def get_users(current_user):

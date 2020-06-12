@@ -5,7 +5,9 @@ The product fields are Id, Name, Price, Category, CreatedDate, UpdatedDate.
 
   + flask
   + flask_sqlalchemy - for persistent data management
+  + werkzeug.security - hash password
   + jwt - for authorization (encode id -> token)
+  + flask_limiter - for rate limit
 
   Python Console
   

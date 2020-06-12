@@ -58,7 +58,7 @@ def token_required(f):
 @app.route('/catalog', methods=['GET'])
 @token_required
 @limiter.limit('10 per hour')
-def get_all_products():
+def get_all_products(current_user):
     products = Product.query.all()
     products_data = []
     #Id, Name, Price, Category, CreatedDate, UpdatedDate
@@ -73,7 +73,7 @@ def get_all_products():
 @app.route('/catalog/<product_id>', methods=['GET'])
 @token_required
 @limiter.limit('15 per hour')
-def get_one_product(product_id):
+def get_one_product(current_user, product_id):
     product = Product.query.filter_by(id=product_id).first()
     if not product:
         return jsonify({'message': 'No product found!'})

@@ -5,13 +5,17 @@ import os
 import jwt
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 file_path = os.path.abspath(os.getcwd()) + "\mydb.db"
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'biggestsecretever'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + file_path
+
 db = SQLAlchemy(app)
+limiter = Limiter(app, key_func=get_remote_address)
 
 
 # The product fields are Id, Name, Price, Category, CreatedDate, UpdatedDate
@@ -53,6 +57,7 @@ def token_required(f):
 
 @app.route('/catalog', methods=['GET'])
 @token_required
+@limiter.limit('10 per hour')
 def get_all_products():
     products = Product.query.all()
     products_data = []
@@ -67,6 +72,7 @@ def get_all_products():
 
 @app.route('/catalog/<product_id>', methods=['GET'])
 @token_required
+@limiter.limit('15 per hour')
 def get_one_product(product_id):
     product = Product.query.filter_by(id=product_id).first()
     if not product:

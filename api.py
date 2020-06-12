@@ -221,6 +221,7 @@ def delete_user(current_user, user_id):
 
 
 @app.route('/login')
+@limiter.limit('10 per hour')
 def login():
     auth = request.authorization
     if not auth or not auth.username or not auth.password:

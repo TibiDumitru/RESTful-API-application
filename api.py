@@ -125,12 +125,12 @@ def update_product(current_user, product_id, new_value):
     if not product:
         return jsonify({'message': 'Product not found!'})
 
-    # if new_value is a float value -> update price
-    if isinstance(new_value, float):
-        product.price = new_value
     # if new_value is a string value -> update category
-    if isinstance(new_value, str):
+    # else new_value is a float value -> update price
+    if new_value.isalpha():
         product.category = new_value
+    else:
+        product.price = new_value
     # change the updatedDate
     product.updatedDate = datetime.datetime.now()
     db.session.commit()

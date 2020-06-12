@@ -25,6 +25,3 @@ The product fields are Id, Name, Price, Category, CreatedDate, UpdatedDate.
   set FLASK_DEBUG=1
   
   flask run
-
-
-
